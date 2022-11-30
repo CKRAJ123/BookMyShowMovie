@@ -1,0 +1,6 @@
+<?php
+return[
+        'access_key' => env('payment_key','eyJpdiI6IlpwajZ6OENoVDZFZUVrZ1JuL2xXZ3c9PSIsInZhbHVlIjoidE4ycXRqMXNiMUhXN2R0Zm1ONE5FQT09IiwibWFjIjoiZmRkNDEwOWRhZDUxYjc3ODVkMzlhNDlmYzY2YjVjZDg3Y2Q5NDkwZTNkNjQ0YTBlMTZlNjE4YWFmZGI1ZjZjZCIsInRhZyI6IiJ9' ),
+        'secret_key' => env('payment_secret','eyJpdiI6InNLMkZOeWkzRGtlbkM4Si9sMmxlSXc9PSIsInZhbHVlIjoiTnVETS9YS1lHMGk0SVM0N1FzZFZLZz09IiwibWFjIjoiYTY4NzEwM2I4M2MzNjUyYzZlYjU5ZThhODNhN2RmYWFkY2I3MTJlODI4OTEyNTA2ZmM1MjFmMjYyZjhmMDA5MyIsInRhZyI6IiJ9')
+];
+?>
