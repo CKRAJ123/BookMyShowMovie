@@ -12,7 +12,7 @@
 
     <div class="movie-container">
         <!-- <div class="card-header">{{ __('seat_booking') }}</div> -->
-        <form method="post" action="{{ route('paynow') }}">
+        <form method="post" action="{{ route('paynow',$theater->id) }}">
             @csrf
 
         <!-- <div class="form-group"> -->
@@ -26,7 +26,7 @@
             <br>
 
 
-        <label> Pick a Movie </label>
+        <!-- <label> Pick a Movie </label>
         <select name="movie" id="movie">
             <option value= "The Avenger"> The Avenger </option>
             <option value="Captain America"> Captain America </option>
@@ -46,7 +46,21 @@
             <option value="RRR"> RRR </option>
 
 
-        </select>
+        </select> -->
+        <div class="row mb-3">
+                         <label for="name" class="col-md-4 col-form-label text-md-end">{{ __(' Movie Name:-') }}</label>
+
+                        <div class="col-md-6" name="movie" id="movie">
+                                <!-- <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Card Holder Name..." name="name" value="{{ old('name') }}" required autocomplete="name" autofocus> -->
+                                <span><b>{{ $theater->movie_name }}</b></span>
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                     </div>
+
     </div>
     <ul class="showcase">
         <li>
@@ -140,7 +154,7 @@
             <div class="seat occupied"></div>
         </div>
 
-        <div class="row" id="name="seat_booked[]>
+        <div class="row" id="seatBooked">
             <div class="seat"><input type="checkbox" value="f1" name="seat_booked[]"></div>
             <div class="seat"><input type="checkbox" value="f2" name="seat_booked[]"></div>
             <div class="seat"><input type="checkbox" value="f3" name="seat_booked[]"></div>
@@ -162,11 +176,11 @@
 </form>
     </div>
     <script >
-        const container = document.querySelector('.container');
-const seats = document.querySelectorAll('.row .seat:not(.occupied)');
-const count = document.getElementById('count');
-const total = document.getElementById('total');
-const movieSelect = document.getElementById('movie');
+      const container = document.querySelector('.container');
+      const seats = document.querySelectorAll('.row .seat:not(.occupied)');
+      const count = document.getElementById('count');
+      const total = document.getElementById('total');
+      const movieSelect = document.getElementById('movie');
 
 let ticketPrice  = +movieSelect.value;
 

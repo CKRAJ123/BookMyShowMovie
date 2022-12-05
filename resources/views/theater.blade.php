@@ -29,14 +29,16 @@
     </thead>
     <tbody>
         @foreach($theaters as $theater)
+        @if($theater->movie_name == $film->movie_name)
       <tr>
         <td>{{$theater->id}}</td>
         <td>{{$theater->theater_name}}</td>
         <td>{{$theater->movie_name}}</td>
         <td>{{$theater->movie_id}}</td>
         <td>{{$theater->time}}</td>
-        <td> <button type="submit" class="btn btn-outline-success btn-lg"><a href="{{ route('seat_booking') }}" class="link-product-add-cart" >seat_booking </a></button></td>
+        <td> <button type="submit" class="btn btn-outline-success btn-lg"><a href="{{ route('seat_booking',$theater->id) }}" class="link-product-add-cart" >seat_booking </a></button></td>
       </tr>
+      @endif
       @endforeach
     </tbody>
   </table>

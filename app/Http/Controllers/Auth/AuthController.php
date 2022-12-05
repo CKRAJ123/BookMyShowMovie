@@ -13,6 +13,7 @@ use App\Models\Theater;
 use App\Services\PaymentServiceInterface;
 use App\Interface\SeatInterface;
 use App\Models\Seatbooked;
+use App\Models\My_booking;
 class AuthController extends Controller
 {
     /**
@@ -28,6 +29,13 @@ class AuthController extends Controller
     //     $this->seatinterface = $seatinterface;
 
     // }
+    protected $paymentServiceInterface;
+
+    public function __construct(PaymentServiceInterface $paymentServiceInterface) {
+      
+        $this->paymentServiceInterface=$paymentServiceInterface;
+    //    $this->reject= $attendance;
+   }
     public function index()
     {
         return view('auth.login');
@@ -129,26 +137,32 @@ class AuthController extends Controller
     }
 
 
-    public function book_movie(){
+    public function book_movie($id){
         // dd($user_id);
         $theaters=Theater::all();
         //dd( $theaters);
-       // $user=User::find($user_id)->first;
+       // $=User::find($user_id)->first;
        // dd($user);
-        return view('theater')->with('theaters',$theaters);
+       $film = Film::where('id',$id)->first();
+        // dd($film->movie_name);
+        return view('theater')->with('theaters',$theaters)->with('film',$film);
     }
-    public function seat_booking(){
-        return view('SeatBookShow');
+    public function seat_booking($theater_id){
+        //dd($theater_id);
+        $theater = Theater::where('id',$theater_id)->first();
+        return view('SeatBookShow')->with('theater',$theater);
     }
 
-    public function paynow(Request $request){
-        //dd( $request);
+    public function paynow(Request $request,$theater_id){
+        //dd( $theater_id);
+        $theater = Theater::where('id',$theater_id)->first();
         $data = $request->input();
-       // dd($data );
+        //dd($data );
         $seatsBooked = $data['seat_booked'];
        // dd( $seatsBooked);
         $data['amount'] = count($seatsBooked) * 200;
         //dd(count($seatsBooked));
+        $data['movie']=$theater->movie_name;
         $getPaymentToken = $this->generateBookingPaymentToken($data['amount']);
        // dd( $getPaymentToken);
         $seatbooked = new Seatbooked;
@@ -157,45 +171,35 @@ class AuthController extends Controller
         $seatbooked->name=$data['name'];
         $seatbooked->token_id=$getPaymentToken;
         $seatbooked->status="pending";
-        $seatbooked->movie_name=$data['movie'];
+        $seatbooked->movie_name=$theater->movie_name;
         $seatbooked->save();
        // dd($seatbooked->id);
-        return view('SeatBookingPayment')->with('token', $getPaymentToken)->with('data', $data)->with('id', $seatbooked->id);
+        return view('SeatBookingPayment')->with('token', $getPaymentToken)->with('data', $data)->with('id', $seatbooked->id)->with('theater_id', $theater_id);
     }
     /**
      * @throws GuzzleException
      */
     public function generateBookingPaymentToken($amount)
     {
-        $bytes = random_bytes(20);
-
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('POST', 'https://sandbox-icp-api.bankopen.co/api/payment_token', [
-            'body' => json_encode([
-                "amount" => $amount,
-                "contact_number" => "8043234223",
-                "email_id" => "code@gmail.com",
-                "currency" => "INR",
-                "mtx" => bin2hex($bytes)
-            ]),
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer c6b19ee0-284e-11ed-a4b4-91d56a37fb20:1c7903dfe788673d46d6a2fc898756ef229efb6b',
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-        $responseData = json_decode($response->getBody()->getContents());
-       //dd($responseData);
-        return $responseData->id;
+    
+          return $this->paymentServiceInterface->doMoviePayment($amount);
 
     }
-    public function MovieTicketSuccess($token,$id){
-         // dd($id);
-        $seatbooked = Seatbooked::where('id',$id)->first();
+    public function MovieTicketSuccess($theater_id,$seatbooked_id){
+         // dd($theater_id);
+        $seatbooked = Seatbooked::where('id',$seatbooked_id)->first();
         $seatbooked->status="success";
         $seatbooked->save();
-        return Redirect('seat_booking')->withSuccess('yes Your seat has been booked and payment completed') ;
+
+        $my_booking=new My_booking;
+        $my_booking->theater_id=$theater_id;
+        $my_booking->seatbooked_id=$seatbooked_id;
+        $my_booking->save();
+        //return "Payment has been successfully completed";
+        $films = Film::paginate(3);
+        $user=User::first();
+     return view('welcome')->with('films',$films)->with('user',$user)->withSuccess('yes Your seat has been booked and payment completed');
+       // return view('welcome')->withSuccess('yes Your seat has been booked and payment completed') ;
     }
    
 }

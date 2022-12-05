@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class My_booking extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        
+        'theater_id',
+        'seatbooked_id',
+        //'status',
+    ];
 }

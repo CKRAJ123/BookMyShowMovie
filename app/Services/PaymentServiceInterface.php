@@ -4,5 +4,5 @@ namespace App\Services;
 
 interface PaymentServiceInterface{
      
-    public function doMoviePayment();
+    public function doMoviePayment($amount);
 }

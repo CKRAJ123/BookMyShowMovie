@@ -2,61 +2,36 @@
 
 namespace App\services;
 
-use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Support\Facades\Crypt;
+// use Illuminate\Contracts\Encryption\DecryptException;
+// use Illuminate\Support\Facades\Crypt;
 
 class PaymentService implements PaymentServiceInterface
 {
 
 
-      public function doMoviePayment()
+      public function doMoviePayment($amount)
       {
 
 
+            $bytes = random_bytes(20);
+
         $client = new \GuzzleHttp\Client();
-        // dd($client);
-       
-       
-       // dd($id);
-        try{
-            // $id = Crypt::decrypt($config);  
-            $id = config('secretKey.access_key');
-           // dd($id);
-        }
-        catch(Illuminate\Contracts\Encryption\DecryptException $r){
-            
-            echo $r;
-        }
-       
-        // dd($id);
-        $secret = config('secretKey.secret_key');
-      //  $secret = Crypt::decrypt($secretConfig);
-        
-       // dd($secret);
-        $bytes = random_bytes(20);
-       // dump("hoiiii");
         $response = $client->request('POST', 'https://sandbox-icp-api.bankopen.co/api/payment_token', [
             'body' => json_encode([
-                "amount" => 10 ,
-                "contact_number" => "7567662274",
-                "email_id" => "ck90454@gmail.com" ,
+                "amount" => $amount,
+                "contact_number" => "8043234223",
+                "email_id" => "krchandanagarwal@gmail.com",
                 "currency" => "INR",
                 "mtx" => bin2hex($bytes)
-               
             ]),
-        'headers' => [
-            'Authorization' => 'Bearer '.$id.':'.$secret,
-            'accept' => 'application/json',
-            'content-type' => 'application/json',
-        ],
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer c6b19ee0-284e-11ed-a4b4-91d56a37fb20:1c7903dfe788673d46d6a2fc898756ef229efb6b',
+                'Content-Type' => 'application/json',
+            ],
         ]);
-       // dump("chand");
-       // dd($response);
-     
-        $responseData = json_decode($response->getBody()->getContents());
-        //dd($responseData);
-        //dd($responseData->id);
-        return $responseData->id;
 
+        $responseData = json_decode($response->getBody()->getContents());
+             return $responseData->id;
       }
 }

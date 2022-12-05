@@ -126,7 +126,7 @@
 
                                 if (response.status == "captured") {
 
-                                    window.location.href = "success/{{$token}}/{{$id}}";
+                                    window.location.href = "success/{{$theater_id}}/{{$id}}";
                                
                                 } else if (response.status == "created") {
                                     

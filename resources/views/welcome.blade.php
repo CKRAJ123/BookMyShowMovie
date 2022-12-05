@@ -66,7 +66,7 @@
                         <div class="movie-list-item">
                         <img src="{{ asset('img/'.$film->image_url ) }}" alt="movies released" class="movie-list-item-img">
                             <span class="movie-list-item-title">{{ $film->movie_name }}</span>
-                            <p class="movie-list-item-desc">{{ $user->id }}</p>
+                            <p class="movie-list-item-desc">{{ $film->description}}</p>
         
                                 <button type="submit" class="btn btn-outline-success btn-lg"><a href="{{ route('book_movie',$film->id) }}" class="link-product-add-cart" >book_movie </a></button>
                         </div>
